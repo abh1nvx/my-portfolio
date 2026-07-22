@@ -1,0 +1,133 @@
+:root {
+  --bg: #050b07;
+  --panel: #0f1b12;
+  --text: #d8f7d8;
+  --accent: #3cff7b;
+  --muted: #76b98b;
+  --border: #1f4c2d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Courier New", Courier, monospace;
+  background: radial-gradient(circle at top, #102317 0%, var(--bg) 60%);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.hero {
+  width: min(900px, 100%);
+}
+
+.terminal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 0 35px rgba(60, 255, 123, 0.15);
+  overflow: hidden;
+}
+
+.terminal__bar {
+  background: #111d14;
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot--red { background: #ff5f56; }
+.dot--yellow { background: #ffbd2e; }
+.dot--green { background: #27c93f; }
+
+.terminal__body {
+  padding: 32px 28px;
+}
+
+.line {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+
+.prompt {
+  color: var(--accent);
+  margin-right: 8px;
+}
+
+.greeting {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.accent {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--muted);
+  max-width: 650px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: #021109;
+  box-shadow: 0 0 18px rgba(60, 255, 123, 0.3);
+}
+
+.btn--ghost {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: transparent;
+}
+
+@media (max-width: 600px) {
+  .terminal__body {
+    padding: 24px 18px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    text-align: center;
+  }
+}
