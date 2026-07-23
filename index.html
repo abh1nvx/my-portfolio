@@ -7,7 +7,28 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="hero">
+    <div id="boot-screen" class="boot-screen" aria-live="polite" aria-hidden="false">
+      <div class="terminal terminal--boot">
+        <div class="terminal__bar">
+          <span class="dot dot--red"></span>
+          <span class="dot dot--yellow"></span>
+          <span class="dot dot--green"></span>
+        </div>
+
+        <div class="terminal__body terminal__body--boot">
+          <div id="boot-output" class="boot-screen__output" aria-label="Boot sequence"></div>
+
+          <div class="boot-screen__progress" aria-label="Boot progress">
+            <div class="boot-screen__progress-track">
+              <div id="boot-progress-fill" class="boot-screen__progress-fill"></div>
+            </div>
+            <p id="boot-progress-label" class="boot-screen__progress-label">Loading 0%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="hero" aria-hidden="true">
       <section class="terminal" aria-label="Portfolio hero section">
         <div class="terminal__bar">
           <span class="dot dot--red"></span>
@@ -29,5 +50,7 @@
         </div>
       </section>
     </main>
+
+    <script src="script.js"></script>
   </body>
 </html>
