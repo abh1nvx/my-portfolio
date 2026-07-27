@@ -70,8 +70,27 @@
       </section>
     </main>
 
+    <section class="whoami" id="whoami" aria-label="Who am I terminal section">
+      <div class="terminal terminal--whoami">
+        <div class="terminal__bar">
+          <span class="dot dot--red"></span>
+          <span class="dot dot--yellow"></span>
+          <span class="dot dot--green"></span>
+        </div>
+
+        <div class="terminal__body terminal__body--whoami">
+          <p class="line whoami__prompt-line">
+            <span class="prompt">C:\Users\Visitor&gt;</span>
+            <span id="whoami-command" class="whoami__command"></span>
+            <span id="whoami-cursor" class="whoami__cursor" aria-hidden="true"></span>
+          </p>
+
+          <div id="whoami-output" class="whoami__output" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
     <div class="hero__anchors" aria-hidden="true">
-      <span id="whoami"></span>
       <span id="history"></span>
       <span id="projects"></span>
       <span id="passions"></span>

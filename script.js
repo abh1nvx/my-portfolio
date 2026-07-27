@@ -13,6 +13,11 @@ const heroPromptLine = document.querySelector('.hero__prompt-line');
 const heroCommands = document.getElementById('hero-commands');
 const heroContinuation = document.getElementById('hero-continuation');
 const heroClock = document.getElementById('hero-clock');
+const whoamiSection = document.querySelector('.whoami');
+const whoamiCommand = document.getElementById('whoami-command');
+const whoamiCursor = document.getElementById('whoami-cursor');
+const whoamiPromptLine = document.querySelector('.whoami__prompt-line');
+const whoamiOutput = document.getElementById('whoami-output');
 
 const sequence = [
   { text: 'BOOTING ABHINAV OS...', delay: 300 },
@@ -305,8 +310,168 @@ function updateClock() {
   heroClock.textContent = now.toLocaleTimeString('en-GB', { hour12: false });
 }
 
+function attachWhoamiCursor(line) {
+  if (whoamiCursor.parentNode && whoamiCursor.parentNode !== line) {
+    whoamiCursor.parentNode.removeChild(whoamiCursor);
+  }
+
+  whoamiCursor.classList.remove('is-hidden');
+  line.appendChild(whoamiCursor);
+}
+
+function detachWhoamiCursor() {
+  if (whoamiCursor.parentNode) {
+    whoamiCursor.parentNode.removeChild(whoamiCursor);
+  }
+  whoamiCursor.classList.add('is-hidden');
+}
+
+function typeWhoamiCommand(text) {
+  whoamiCommand.textContent = '';
+
+  if (whoamiCursor.parentNode) {
+    whoamiCursor.parentNode.removeChild(whoamiCursor);
+  }
+
+  whoamiPromptLine.appendChild(whoamiCursor);
+  whoamiCursor.classList.remove('is-hidden');
+
+  if (reducedMotion) {
+    whoamiCommand.textContent = text;
+    detachWhoamiCursor();
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    let index = 0;
+    const timer = window.setInterval(() => {
+      whoamiCommand.textContent += text[index];
+      index += 1;
+
+      if (index >= text.length) {
+        window.clearInterval(timer);
+        detachWhoamiCursor();
+        resolve();
+      }
+    }, 38);
+  });
+}
+
+function typeWhoamiLine(text, options = {}) {
+  const line = document.createElement('p');
+  line.className = options.lineClass || 'line whoami__typed-line';
+  whoamiOutput.appendChild(line);
+
+  const span = document.createElement('span');
+  span.className = options.spanClass || 'whoami__typed-text';
+  line.appendChild(span);
+
+  if (options.prefix) {
+    const prefixEl = document.createElement('span');
+    prefixEl.className = options.prefixClass || 'prompt';
+    prefixEl.textContent = options.prefix;
+    line.insertBefore(prefixEl, span);
+  }
+
+  attachWhoamiCursor(line);
+
+  if (reducedMotion) {
+    span.textContent = text;
+    if (!options.keepCursor) {
+      detachWhoamiCursor();
+    }
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    let index = 0;
+    const timer = window.setInterval(() => {
+      span.textContent += text[index];
+      index += 1;
+
+      if (index >= text.length) {
+        window.clearInterval(timer);
+        if (!options.keepCursor) {
+          detachWhoamiCursor();
+        }
+        resolve();
+      }
+    }, options.speed || 34);
+  });
+}
+
+async function runWhoamiSequence() {
+  if (!whoamiSection || !whoamiOutput) {
+    return;
+  }
+
+  whoamiOutput.innerHTML = '';
+  whoamiCommand.textContent = '';
+  whoamiCursor.classList.remove('is-hidden');
+
+  await typeWhoamiCommand('whoami');
+  await wait(240);
+
+  const profileLines = [
+    'Name............. ABHINAV SHARMA',
+    'Status........... Student',
+    'Occupation....... Building cool things',
+    'Current Mission.. Turning ideas into reality',
+    'Location......... Somewhere between VS Code and Photoshop',
+    'Favorite Bug..... Missing semicolon'
+  ];
+
+  for (const line of profileLines) {
+    await typeWhoamiLine(line, { lineClass: 'line whoami__typed-line' });
+    await wait(140);
+  }
+
+  await typeWhoamiLine('I tend to get curious, start tinkering, and keep going until the idea turns into something real. I like building with energy, experimenting with humor, and making the strange feel possible.', {
+    lineClass: 'line whoami__typed-line whoami__about',
+    keepCursor: false
+  });
+  await wait(220);
+
+  await typeWhoamiLine('Quick Facts', { lineClass: 'line whoami__subheading' });
+  await typeWhoamiLine('OS .............. Windows', { lineClass: 'line whoami__typed-line' });
+  await typeWhoamiLine('Editor .......... VS Code', { lineClass: 'line whoami__typed-line' });
+  await typeWhoamiLine('Fuel ............ Curiosity', { lineClass: 'line whoami__typed-line' });
+  await typeWhoamiLine('Favorite Sport .. Cricket', { lineClass: 'line whoami__typed-line' });
+  await typeWhoamiLine('Playlist ........ Changes every week', { lineClass: 'line whoami__typed-line' });
+  await typeWhoamiLine('Sleep Schedule .. Needs Improvement', { lineClass: 'line whoami__typed-line' });
+  await wait(220);
+
+  await typeWhoamiLine('Current Objective', { lineClass: 'line whoami__subheading' });
+  await typeWhoamiLine('> Keep learning.', { lineClass: 'line whoami__typed-line', prefix: '>', prefixClass: 'prompt' });
+  await typeWhoamiLine('> Keep building.', { lineClass: 'line whoami__typed-line', prefix: '>', prefixClass: 'prompt' });
+  await typeWhoamiLine('> Keep surprising myself.', { lineClass: 'line whoami__typed-line', prefix: '>', prefixClass: 'prompt', keepCursor: true });
+}
+
+function observeWhoamiSection() {
+  if (!whoamiSection || !('IntersectionObserver' in window)) {
+    if (whoamiSection) {
+      whoamiSection.classList.add('is-visible');
+      runWhoamiSequence();
+    }
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        whoamiSection.classList.add('is-visible');
+        observer.disconnect();
+        runWhoamiSequence();
+      }
+    });
+  }, { threshold: 0.2 });
+
+  observer.observe(whoamiSection);
+}
+
 window.addEventListener('load', () => {
   updateClock();
   window.setInterval(updateClock, 1000);
   window.setTimeout(runBootSequence, 180);
+  observeWhoamiSection();
 });
