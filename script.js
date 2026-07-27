@@ -9,6 +9,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 const heroOutput = document.getElementById('hero-output');
 const heroCommand = document.getElementById('hero-command');
 const heroCursor = document.getElementById('hero-cursor');
+const heroPromptLine = document.querySelector('.hero__prompt-line');
 const heroCommands = document.getElementById('hero-commands');
 const heroContinuation = document.getElementById('hero-continuation');
 const heroClock = document.getElementById('hero-clock');
@@ -120,13 +121,35 @@ function wait(duration) {
   });
 }
 
+function attachCursorToLine(line) {
+  if (heroCursor.parentNode && heroCursor.parentNode !== line) {
+    heroCursor.parentNode.removeChild(heroCursor);
+  }
+
+  heroCursor.classList.remove('is-hidden');
+  line.appendChild(heroCursor);
+}
+
+function detachCursor() {
+  if (heroCursor.parentNode) {
+    heroCursor.parentNode.removeChild(heroCursor);
+  }
+  heroCursor.classList.add('is-hidden');
+}
+
 function typePromptText(text) {
   heroCommand.textContent = '';
+
+  if (heroCursor.parentNode) {
+    heroCursor.parentNode.removeChild(heroCursor);
+  }
+
+  heroPromptLine.appendChild(heroCursor);
   heroCursor.classList.remove('is-hidden');
 
   if (reducedMotion) {
     heroCommand.textContent = text;
-    heroCursor.classList.add('is-hidden');
+    detachCursor();
     return Promise.resolve();
   }
 
@@ -138,7 +161,7 @@ function typePromptText(text) {
 
       if (index >= text.length) {
         window.clearInterval(timer);
-        heroCursor.classList.add('is-hidden');
+        detachCursor();
         resolve();
       }
     }, 38);
@@ -148,39 +171,49 @@ function typePromptText(text) {
 function typeHeroLine(text, options = {}) {
   const line = document.createElement('p');
   line.className = options.lineClass || 'line hero__typed-line';
-
-  const typed = document.createElement('span');
-  typed.className = 'hero__typed-text';
-  line.appendChild(typed);
-
-  if (options.prefix) {
-    const prefixEl = document.createElement('span');
-    prefixEl.className = options.prefixClass || 'prompt';
-    prefixEl.textContent = options.prefix;
-    line.insertBefore(prefixEl, typed);
-  }
-
-  if (options.addCursor !== false) {
-    const cursor = document.createElement('span');
-    cursor.className = 'hero__cursor';
-    line.appendChild(cursor);
-  }
-
   heroOutput.appendChild(line);
 
+  const segments = Array.isArray(text) ? text : [{ text, className: '' }];
+  const spans = segments.map((segment) => {
+    const span = document.createElement('span');
+    span.className = segment.className || '';
+    line.appendChild(span);
+    return span;
+  });
+
+  attachCursorToLine(line);
+
   if (reducedMotion) {
-    typed.textContent = text;
+    spans.forEach((span, index) => {
+      span.textContent = segments[index].text;
+    });
+
+    if (!options.keepCursor) {
+      detachCursor();
+    }
     return Promise.resolve();
   }
 
   return new Promise((resolve) => {
-    let index = 0;
-    const timer = window.setInterval(() => {
-      typed.textContent += text[index];
-      index += 1;
+    let segmentIndex = 0;
+    let charIndex = 0;
 
-      if (index >= text.length) {
+    const timer = window.setInterval(() => {
+      const currentSegment = segments[segmentIndex];
+      const currentSpan = spans[segmentIndex];
+      currentSpan.textContent += currentSegment.text[charIndex];
+      charIndex += 1;
+
+      if (charIndex >= currentSegment.text.length) {
+        segmentIndex += 1;
+        charIndex = 0;
+      }
+
+      if (segmentIndex >= segments.length) {
         window.clearInterval(timer);
+        if (!options.keepCursor) {
+          detachCursor();
+        }
         resolve();
       }
     }, options.speed || 34);
@@ -236,7 +269,11 @@ async function runHeroSequence() {
 
   const introLines = [
     'Hello.',
-    "I'm Abhinav Sharma.",
+    [
+      { text: "I'm ", className: '' },
+      { text: 'ABHINAV SHARMA', className: 'hero__name' },
+      { text: '.', className: '' }
+    ],
     'Student.',
     'Builder.',
     'Designer.',
@@ -246,8 +283,11 @@ async function runHeroSequence() {
     'Currently making impossible ideas happen.'
   ];
 
-  for (const line of introLines) {
-    await typeHeroLine(line, { lineClass: 'line hero__intro-line' });
+  for (const [index, line] of introLines.entries()) {
+    await typeHeroLine(line, {
+      lineClass: 'line hero__intro-line',
+      keepCursor: index === introLines.length - 1
+    });
     await wait(180);
   }
 

@@ -208,7 +208,6 @@ body.is-loaded .hero {
   background: var(--accent);
   vertical-align: middle;
   animation: cursorBlink 1s steps(1) infinite;
-  box-shadow: 0 0 8px rgba(60, 255, 123, 0.4);
 }
 
 .hero__cursor.is-hidden {
@@ -292,6 +291,12 @@ body.is-loaded .hero {
 .hero__intro-line {
   font-size: clamp(1.15rem, 2.5vw, 1.5rem);
   margin-bottom: 0;
+}
+
+.hero__name {
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .hero__commands {
