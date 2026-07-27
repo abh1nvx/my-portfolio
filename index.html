@@ -36,20 +36,47 @@
           <span class="dot dot--green"></span>
         </div>
 
-        <div class="terminal__body">
-          <p class="line"><span class="prompt">$</span> hello</p>
-          <p class="line greeting">Hello, I am <span class="accent">ABHINAV SHARMA</span></p>
-          <p class="line subtitle">
-            I craft elegant digital experiences with design, code, and creativity.
-          </p>
+        <div class="terminal__body terminal__body--hero">
+          <div class="hero__main">
+            <div class="hero__header">
+              <p class="line hero__prompt-line">
+                <span class="prompt">C:\Users\Visitor&gt;</span>
+                <span id="hero-command" class="hero__command"></span>
+                <span id="hero-cursor" class="hero__cursor" aria-hidden="true"></span>
+              </p>
 
-          <div class="actions">
-            <a class="btn btn--primary" href="mailto:abhinavsharma@email.com">Contact Me</a>
-            <a class="btn btn--ghost" href="#projects">View Projects</a>
+              <div id="hero-output" class="hero__output" aria-live="polite"></div>
+              <div id="hero-commands" class="hero__commands" hidden></div>
+              <p id="hero-continuation" class="line hero__continuation" hidden></p>
+            </div>
           </div>
+
+          <aside class="hero__status" aria-label="System status">
+            <p class="hero__status-title">SYSTEM STATUS</p>
+            <div class="hero__status-row hero__status-row--online">
+              <span class="hero__status-dot"></span>
+              <span>ONLINE</span>
+            </div>
+            <p class="hero__status-item"><span>Location</span>India</p>
+            <p class="hero__status-item"><span>Mode</span>Building</p>
+            <p class="hero__status-item"><span>Coffee</span>Unknown</p>
+            <p class="hero__status-item"><span>Bug Count</span>???</p>
+            <div class="hero__status-clock">
+              <span class="hero__status-label">Local Time</span>
+              <span id="hero-clock" class="hero__clock">--:--:--</span>
+            </div>
+          </aside>
         </div>
       </section>
     </main>
+
+    <div class="hero__anchors" aria-hidden="true">
+      <span id="whoami"></span>
+      <span id="history"></span>
+      <span id="projects"></span>
+      <span id="passions"></span>
+      <span id="future"></span>
+    </div>
 
     <script src="script.js"></script>
   </body>

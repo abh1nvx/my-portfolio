@@ -33,7 +33,7 @@ body.is-loaded {
 }
 
 .hero {
-  width: min(900px, 100%);
+  width: min(1050px, 100%);
   opacity: 0;
   transition: opacity 0.7s ease;
 }
@@ -161,53 +161,184 @@ body.is-loaded .hero {
   margin-right: 8px;
 }
 
-.greeting {
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  margin-top: 18px;
-  margin-bottom: 10px;
+.terminal__body--hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 24px;
+  align-items: start;
 }
 
-.accent {
-  color: var(--accent);
-  font-weight: 700;
+.hero__main {
+  min-width: 0;
 }
 
-.subtitle {
-  color: var(--muted);
-  max-width: 650px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
+.hero__header {
+  display: grid;
   gap: 12px;
 }
 
-.btn {
-  display: inline-block;
-  text-decoration: none;
-  padding: 12px 18px;
-  border-radius: 8px;
-  font-weight: 700;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.hero__prompt-line {
+  margin-bottom: 6px;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn--primary {
-  background: var(--accent);
-  color: #021109;
-  box-shadow: 0 0 18px rgba(60, 255, 123, 0.3);
-}
-
-.btn--ghost {
-  border: 1px solid var(--border);
+.hero__command {
   color: var(--text);
-  background: transparent;
+}
+
+.hero__output {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero__typed-line {
+  min-height: 1.4em;
+  white-space: pre-wrap;
+}
+
+.hero__typed-text {
+  display: inline;
+}
+
+.hero__cursor {
+  display: inline-block;
+  width: 0.7em;
+  height: 1.05em;
+  margin-left: 0.2em;
+  background: var(--accent);
+  vertical-align: middle;
+  animation: cursorBlink 1s steps(1) infinite;
+  box-shadow: 0 0 8px rgba(60, 255, 123, 0.4);
+}
+
+.hero__cursor.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes cursorBlink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero__status {
+  border: 1px solid var(--border);
+  background: #0a140d;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hero__status-title {
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+}
+
+.hero__status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero__status-row--online {
+  color: var(--accent);
+}
+
+.hero__status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(60, 255, 123, 0.7);
+}
+
+.hero__status-item {
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hero__status-item span {
+  color: var(--text);
+}
+
+.hero__status-clock {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.hero__clock {
+  color: var(--accent);
+}
+
+.hero__status-line {
+  color: var(--muted);
+}
+
+.hero__status-line--ready {
+  color: var(--accent);
+}
+
+.hero__intro-line {
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  margin-bottom: 0;
+}
+
+.hero__commands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hero__command-link {
+  display: inline-block;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.hero__command-link:hover,
+.hero__command-link:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: rgba(60, 255, 123, 0.06);
+  outline: none;
+}
+
+.hero__continuation {
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.hero__anchors {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  left: -9999px;
+}
+
+@media (max-width: 780px) {
+  .terminal__body--hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__status {
+    order: -1;
+  }
 }
 
 @media (max-width: 600px) {
@@ -215,11 +346,11 @@ body.is-loaded .hero {
     padding: 24px 18px;
   }
 
-  .actions {
+  .hero__commands {
     flex-direction: column;
   }
 
-  .btn {
+  .hero__command-link {
     text-align: center;
   }
 }
